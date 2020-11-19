@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1wejbaq" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.2.0">
+  <bpmn:process id="PatientInformationForm" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0glaach</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1rzd66y" sourceRef="Activity_0mlxqvt" targetRef="Activity_1f4vb8q" />
+    <bpmn:endEvent id="Event_088m5ch">
+      <bpmn:incoming>Flow_04vlnjd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_04vlnjd" sourceRef="Activity_1f4vb8q" targetRef="Event_088m5ch" />
+    <bpmn:serviceTask id="Activity_0mlxqvt" name="Get Patient Info">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://hook.integromat.com/j9pcszhham3j7x4w93b099gumh5a64vp</camunda:inputParameter>
+            <camunda:outputParameter name="submission">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+submisson=object.TimeofSubmission;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="surname">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+surname=object.Surname;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="firstName">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+firstName=object.FirstName;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="birthDate">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+birthDate=object.DateOfBirth;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="smoker">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+smoker=object.Smoking;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="alcoholConsumption">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+alcoholConsumption=object.Alcohol;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientHeight">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientHeight=object.Height;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientWeight">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientWeight=object.Weight;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientPacemaker">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientPacemaker=object.Pacemaker;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientHeartDisease">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientHeartDisease=object.HeartDisease;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientHeartRecently">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientHeartRecently=object.HeartRecently;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientBMI">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientBMI=object.BMI;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientOtherDisease">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientOtherDisease=object.OtherDisease;</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0glaach</bpmn:incoming>
+      <bpmn:outgoing>Flow_1rzd66y</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Activity_1f4vb8q" name="Show Patient Info">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="submission" label="Time of Submission" type="string" />
+          <camunda:formField id="surname" label="Surname" type="string" />
+          <camunda:formField id="firstName" label="First Name" type="string" />
+          <camunda:formField id="birthDate" label="Date of Birth" type="string" />
+          <camunda:formField id="smoker" label="Smoker?" type="string" />
+          <camunda:formField id="alcoholConsumption" label="Alcohol consumption" type="string" />
+          <camunda:formField id="patientHeight" label="Height in cm" type="string" />
+          <camunda:formField id="patientWeight" label="Weight in kg" type="string" />
+          <camunda:formField id="patientPacemaker" label="Pacemaker?" type="string" />
+          <camunda:formField id="patientHeartDisease" label="Heart Disease?" type="string" />
+          <camunda:formField id="patientHeartRecently" label="Heart Disease within the last 3 months?" type="string" />
+          <camunda:formField id="patientBMI" label="BMI" type="string" />
+          <camunda:formField id="patientOtherDisease" label="Other Disease?" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1rzd66y</bpmn:incoming>
+      <bpmn:outgoing>Flow_04vlnjd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="Event_1gdde47" attachedToRef="Activity_0mlxqvt">
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1u28iwy">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P14D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_0glaach" sourceRef="StartEvent_1" targetRef="Activity_0mlxqvt" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PatientInformationForm">
+      <bpmndi:BPMNEdge id="Flow_04vlnjd_di" bpmnElement="Flow_04vlnjd">
+        <di:waypoint x="480" y="117" />
+        <di:waypoint x="532" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rzd66y_di" bpmnElement="Flow_1rzd66y">
+        <di:waypoint x="320" y="117" />
+        <di:waypoint x="380" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0glaach_di" bpmnElement="Flow_0glaach">
+        <di:waypoint x="148" y="117" />
+        <di:waypoint x="220" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="112" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oc228c_di" bpmnElement="Activity_0mlxqvt">
+        <dc:Bounds x="220" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wp66a2_di" bpmnElement="Activity_1f4vb8q">
+        <dc:Bounds x="380" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_088m5ch_di" bpmnElement="Event_088m5ch">
+        <dc:Bounds x="532" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0vezqvx_di" bpmnElement="Event_1gdde47">
+        <dc:Bounds x="202" y="139" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

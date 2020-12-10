@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0dlz5e2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.4.0">
+  <bpmn:process id="get-schedule" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_1dhatz3</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_1dhatz3" sourceRef="StartEvent_1" targetRef="Activity_0s26xxb" />
+    <bpmn:sequenceFlow id="Flow_1a8w5kn" sourceRef="Activity_0s26xxb" targetRef="Activity_0uy5oqi" />
+    <bpmn:endEvent id="Event_1d5c7mg">
+      <bpmn:incoming>Flow_0zrdva7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0yookgb" sourceRef="Activity_0uy5oqi" targetRef="Activity_1s3dnxu" />
+    <bpmn:userTask id="Activity_0uy5oqi" name="Show availability">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="newDateStart" label="date appointment start" type="string" />
+          <camunda:formField id="newDateEnd" label="date appointment end" type="string" />
+          <camunda:formField id="nextStart" label="Next Appointment Start" type="string" />
+          <camunda:formField id="nextEnd" label="Next Appointment End" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1a8w5kn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yookgb</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Activity_0s26xxb" name="Check Free Slots">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://api.vyte.in/v2/slots?duration=45&amp;emails=melanie.bochet@gmail.com&amp;from=${newDateStart}&amp;to=${newDateEnd}&amp;timezone=CH</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Authorization">i1am9jx5swxg5y2mt9sayh3sxys6hzorwm147ho8h28ee0uxbc</camunda:entry>
+                <camunda:entry key="accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="nextEnd">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+nextEnd=object.slots[0].end.dateTime;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="nextStart">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+nextAvailableStart=object.slots[0].start.dateTime;</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="newDateEnd">
+            <camunda:script scriptFormat="JavaScript">var date = new Date();
+date.setDate(date.getDate() + 21);
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+newDateEnd= y + '-'+ mm + '-'+ dd;</camunda:script>
+          </camunda:inputParameter>
+          <camunda:inputParameter name="newDateStart">
+            <camunda:script scriptFormat="JavaScript">var date = new Date();
+date.setDate(date.getDate() + 14);
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+newDateStart = y + '-'+ mm + '-'+ dd;</camunda:script>
+          </camunda:inputParameter>
+          <camunda:outputParameter name="newDateEnd">
+            <camunda:script scriptFormat="JavaScript">var date = new Date();
+date.setDate(date.getDate() + 21);
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+newDateEnd= y + '-'+ mm + '-'+ dd;</camunda:script>
+          </camunda:outputParameter>
+          <camunda:outputParameter name="newDateStart">
+            <camunda:script scriptFormat="JavaScript">var date = new Date();
+date.setDate(date.getDate() + 14);
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+newDateStart = y + '-'+ mm + '-'+ dd;</camunda:script>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1dhatz3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1a8w5kn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1qfn7vi" sourceRef="Activity_1s3dnxu" targetRef="Activity_06od5pm" />
+    <bpmn:serviceTask id="Activity_1s3dnxu" name="Book First Slot">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="JavaScript">var myJson = {
+ "title": "Anesthesia Consultation",
+ "created_by": {
+  "user": "5fbcb99aead58495b4d3606c"
+  },
+"confirmed": {
+        "flag": true
+    },
+  "dates": [
+    {
+      "all_day": false,
+      "date": execution.getVariable('formatStartDate'),
+      "end_date": execution.getVariable('formatEndDate')
+    }
+  ],
+ "invitees": {
+    "full_name": "New Patient",
+    "email": "new.patient@myhospital.ch"
+  },
+  "places": [
+    {
+      "name": "My Hospital"
+    }
+  ],
+  "vyteme": true
+}
+out= JSON.stringify(myJson);</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Authorization">i1am9jx5swxg5y2mt9sayh3sxys6hzorwm147ho8h28ee0uxbc</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">https://api.vyte.in/v2/events</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:outputParameter name="confEnd">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+confEnd=object.dates[0].end_date;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="confStart">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+confStart=object.dates[0].date;</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="formatEndDate">
+            <camunda:script scriptFormat="JavaScript">date = new Date(nextEnd);
+date.setDate(date.getDate());
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+var hh = date.getHours();
+if (hh&lt;10 ){
+  hh = '0'+hh;
+} else {
+  hh = hh;
+}
+var min = date.getMinutes();
+if (min&lt;10 ){
+  min = '0'+min;
+} else {
+  min = min;
+}
+formatEndDate= y + '-'+ mm + '-'+ dd + 'T'+hh + ':'+min+':'+ '00';</camunda:script>
+          </camunda:inputParameter>
+          <camunda:inputParameter name="formatStartDate">
+            <camunda:script scriptFormat="JavaScript">date = new Date(nextStart);
+date.setDate(date.getDate());
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+var hh = date.getHours();
+if (hh&lt;10 ){
+  hh = '0'+hh;
+} else {
+  hh = hh;
+}
+var min = date.getMinutes();
+if (min&lt;10 ){
+  min = '0'+min;
+} else {
+  min = min;
+}
+formatStartDate= y + '-'+ mm + '-'+ dd + 'T'+hh + ':'+min+':'+ '00';</camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0yookgb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qfn7vi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0zrdva7" sourceRef="Activity_06od5pm" targetRef="Event_1d5c7mg" />
+    <bpmn:userTask id="Activity_06od5pm" name="Show Booked Slot">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="confStart" label="Confirmed appointment start" type="string" />
+          <camunda:formField id="confEnd" label="Confirmed appointment end" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qfn7vi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zrdva7</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="get-schedule">
+      <bpmndi:BPMNEdge id="Flow_0zrdva7_di" bpmnElement="Flow_0zrdva7">
+        <di:waypoint x="830" y="117" />
+        <di:waypoint x="872" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qfn7vi_di" bpmnElement="Flow_1qfn7vi">
+        <di:waypoint x="680" y="117" />
+        <di:waypoint x="730" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yookgb_di" bpmnElement="Flow_0yookgb">
+        <di:waypoint x="530" y="117" />
+        <di:waypoint x="580" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a8w5kn_di" bpmnElement="Flow_1a8w5kn">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="430" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dhatz3_di" bpmnElement="Flow_1dhatz3">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1d5c7mg_di" bpmnElement="Event_1d5c7mg">
+        <dc:Bounds x="872" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_094dr6p_di" bpmnElement="Activity_0uy5oqi">
+        <dc:Bounds x="430" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1h1zuvv_di" bpmnElement="Activity_0s26xxb">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18uoryw_di" bpmnElement="Activity_1s3dnxu">
+        <dc:Bounds x="580" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10oz626_di" bpmnElement="Activity_06od5pm">
+        <dc:Bounds x="730" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

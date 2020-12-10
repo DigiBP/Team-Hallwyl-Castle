@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_09rffvq" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.4.0">
+  <bpmn:process id="ScorePrediction" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_05bbeoz</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_05bbeoz" sourceRef="StartEvent_1" targetRef="Activity_1lsedlq" />
+    <bpmn:sequenceFlow id="Flow_1erzpyf" sourceRef="Activity_1lsedlq" targetRef="Event_137m6y3" />
+    <bpmn:serviceTask id="Activity_1lsedlq" name="Predict ASA Score">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://bigml.io/andromeda/prediction?username=MSup;api_key=ee8979b665869d72d58967401f8f2b8722678cf9</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="JavaScript">out = JSON.stringify({
+    "model": "model/5fb40c00cb4f9607860004ca", 
+    "input_data": {
+        "000000": "No",
+        "000001": "Low",
+        "000002": "22",
+        "000003": "No",
+        "000004": "No",
+        "000005": "No",
+        "000006": "No"
+        }
+});</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="scorePrediction">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+scorePrediction=object.output;</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05bbeoz</bpmn:incoming>
+      <bpmn:outgoing>Flow_1erzpyf</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="Event_08uicxk">
+      <bpmn:incoming>Flow_1xwh275</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1xwh275" sourceRef="Activity_0eduvqf" targetRef="Event_08uicxk" />
+    <bpmn:userTask id="Activity_0eduvqf" name="Show Score">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="scorePrediction" label="Predicted ASA Score" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_083ec1e</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xwh275</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_083ec1e" sourceRef="Event_137m6y3" targetRef="Activity_0eduvqf" />
+    <bpmn:intermediateCatchEvent id="Event_137m6y3">
+      <bpmn:incoming>Flow_1erzpyf</bpmn:incoming>
+      <bpmn:outgoing>Flow_083ec1e</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1447n5o">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT5S</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ScorePrediction">
+      <bpmndi:BPMNEdge id="Flow_083ec1e_di" bpmnElement="Flow_083ec1e">
+        <di:waypoint x="438" y="117" />
+        <di:waypoint x="474" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xwh275_di" bpmnElement="Flow_1xwh275">
+        <di:waypoint x="574" y="117" />
+        <di:waypoint x="626" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1erzpyf_di" bpmnElement="Flow_1erzpyf">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="402" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05bbeoz_di" bpmnElement="Flow_05bbeoz">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0s10s7n_di" bpmnElement="Activity_1lsedlq">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08uicxk_di" bpmnElement="Event_08uicxk">
+        <dc:Bounds x="626" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1g6bemf_di" bpmnElement="Activity_0eduvqf">
+        <dc:Bounds x="474" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xs35vh_di" bpmnElement="Event_137m6y3">
+        <dc:Bounds x="402" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

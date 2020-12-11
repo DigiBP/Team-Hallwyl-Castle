@@ -1,0 +1,7 @@
+TimeOfSubmission,PatientId,Surname,FirstName,DateOfBirth,Smoking,Alcohol,Height,Weight,Pacemaker,HeartDisease,Heart Recently,OtherDisease,BMI
+02.12.2020 19:51:02,123456,Müller,Peter,01.01.1966,No,Medium,180,75,No,No,No,No,"20,83333333"
+02.12.2020 19:54:10,123321,Meier,Anna,01.07.1977,Yes,High,170,60,No,Yes,Yes,Yes,"17,64705882"
+02.12.2020 19:56:47,321456,Kuhn,Ina,23.02.1955,No,Low,166,62,Yes,Yes,Yes,Yes,"18,6746988"
+02.12.2020 20:15:04,654321,Burgener,Hans,08.09.1982,Yes,High,190,90,No,No,No,No,"23,68421053"
+03.12.2020 12:19:51,666666,Gentsy,Emma,12.04.1990,No,Medium,165,55,No,No,No,No,"16,66666667"
+03.12.2020 17:19:26,987654,Huber,Katharina,04.10.1992,Yes,Medium,160,60,No,No,No,No,"18,75"

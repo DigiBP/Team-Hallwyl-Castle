@@ -1,0 +1,270 @@
+
+/**
+*  Predictor for ASA from model/5fb40c00cb4f9607860004ca
+*  Predictive model by BigML - Machine Learning Made Easy
+*/
+public class Asa {
+
+    public static String predictAsa(String smoking, String alcohol, Double bmi, String pacemaker, String heartDisease, String hd3Months, String otherSevereSystemicIllness) {
+        if (hd3Months == null) {
+            return "4";
+        }
+        else if (hd3Months.equals("No")) {
+            if (bmi == null) {
+                return "3";
+            }
+            else if (bmi > 49) {
+                if (heartDisease == null) {
+                    return "4";
+                }
+                else if (heartDisease.equals("Yes")) {
+                    if (bmi > 50) {
+                        if (bmi > 53) {
+                            return "4";
+                        }
+                        else if (bmi <= 53) {
+                            if (bmi > 51) {
+                                return "3";
+                            }
+                            else if (bmi <= 51) {
+                                if (otherSevereSystemicIllness == null) {
+                                    return "4";
+                                }
+                                else if (otherSevereSystemicIllness.equals("No")) {
+                                    return "4";
+                                }
+                                else if (otherSevereSystemicIllness.equals("Yes")) {
+                                    if (alcohol == null) {
+                                        return "4";
+                                    }
+                                    else if (alcohol.equals("Medium")) {
+                                        return "3";
+                                    }
+                                    else if (!alcohol.equals("Medium")) {
+                                        return "4";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (bmi <= 50) {
+                        return "4";
+                    }
+                }
+                else if (heartDisease.equals("No")) {
+                    if (smoking == null) {
+                        return "4";
+                    }
+                    else if (smoking.equals("No")) {
+                        if (bmi > 53) {
+                            return "4";
+                        }
+                        else if (bmi <= 53) {
+                            if (bmi > 51) {
+                                return "2";
+                            }
+                            else if (bmi <= 51) {
+                                return "4";
+                            }
+                        }
+                    }
+                    else if (smoking.equals("Yes")) {
+                        return "4";
+                    }
+                }
+            }
+            else if (bmi <= 49) {
+                if (pacemaker == null) {
+                    return "3";
+                }
+                else if (pacemaker.equals("No")) {
+                    if (bmi > 39) {
+                        if (smoking == null) {
+                            return "3";
+                        }
+                        else if (smoking.equals("No")) {
+                            return "3";
+                        }
+                        else if (smoking.equals("Yes")) {
+                            if (bmi > 43) {
+                                return "3";
+                            }
+                            else if (bmi <= 43) {
+                                if (bmi > 42) {
+                                    return "2";
+                                }
+                                else if (bmi <= 42) {
+                                    return "3";
+                                }
+                            }
+                        }
+                    }
+                    else if (bmi <= 39) {
+                        if (otherSevereSystemicIllness == null) {
+                            return "2";
+                        }
+                        else if (otherSevereSystemicIllness.equals("No")) {
+                            if (bmi > 18) {
+                                if (alcohol == null) {
+                                    return "2";
+                                }
+                                else if (alcohol.equals("Low")) {
+                                    if (bmi > 28) {
+                                        return "2";
+                                    }
+                                    else if (bmi <= 28) {
+                                        if (smoking == null) {
+                                            return "1";
+                                        }
+                                        else if (smoking.equals("No")) {
+                                            return "1";
+                                        }
+                                        else if (smoking.equals("Yes")) {
+                                            return "2";
+                                        }
+                                    }
+                                }
+                                else if (!alcohol.equals("Low")) {
+                                    if (bmi > 29) {
+                                        if (bmi > 38) {
+                                            return "3";
+                                        }
+                                        else if (bmi <= 38) {
+                                            if (bmi > 36) {
+                                                return "2";
+                                            }
+                                            else if (bmi <= 36) {
+                                                if (heartDisease == null) {
+                                                    return "2";
+                                                }
+                                                else if (heartDisease.equals("Yes")) {
+                                                    return "3";
+                                                }
+                                                else if (heartDisease.equals("No")) {
+                                                    if (bmi > 30) {
+                                                        if (bmi > 33) {
+                                                            if (bmi > 34) {
+                                                                return "2";
+                                                            }
+                                                            else if (bmi <= 34) {
+                                                                return "3";
+                                                            }
+                                                        }
+                                                        else if (bmi <= 33) {
+                                                            return "2";
+                                                        }
+                                                    }
+                                                    else if (bmi <= 30) {
+                                                        if (alcohol.equals("Medium")) {
+                                                            return "2";
+                                                        }
+                                                        else if (!alcohol.equals("Medium")) {
+                                                            return "3";
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    else if (bmi <= 29) {
+                                        return "2";
+                                    }
+                                }
+                            }
+                            else if (bmi <= 18) {
+                                if (bmi > 15) {
+                                    if (heartDisease == null) {
+                                        return "3";
+                                    }
+                                    else if (heartDisease.equals("Yes")) {
+                                        return "3";
+                                    }
+                                    else if (heartDisease.equals("No")) {
+                                        if (bmi > 16) {
+                                            return "2";
+                                        }
+                                        else if (bmi <= 16) {
+                                            if (alcohol == null) {
+                                                return "3";
+                                            }
+                                            else if (alcohol.equals("High")) {
+                                                return "3";
+                                            }
+                                            else if (!alcohol.equals("High")) {
+                                                return "3";
+                                            }
+                                        }
+                                    }
+                                }
+                                else if (bmi <= 15) {
+                                    return "3";
+                                }
+                            }
+                        }
+                        else if (otherSevereSystemicIllness.equals("Yes")) {
+                            if (bmi > 21) {
+                                return "3";
+                            }
+                            else if (bmi <= 21) {
+                                if (bmi > 20) {
+                                    return "2";
+                                }
+                                else if (bmi <= 20) {
+                                    return "3";
+                                }
+                            }
+                        }
+                    }
+                }
+                else if (pacemaker.equals("Yes")) {
+                    if (alcohol == null) {
+                        return "3";
+                    }
+                    else if (alcohol.equals("Medium")) {
+                        return "3";
+                    }
+                    else if (!alcohol.equals("Medium")) {
+                        if (heartDisease == null) {
+                            return "3";
+                        }
+                        else if (heartDisease.equals("Yes")) {
+                            if (bmi > 37) {
+                                if (bmi > 42) {
+                                    return "3";
+                                }
+                                else if (bmi <= 42) {
+                                    if (alcohol.equals("High")) {
+                                        return "2";
+                                    }
+                                    else if (!alcohol.equals("High")) {
+                                        return "3";
+                                    }
+                                }
+                            }
+                            else if (bmi <= 37) {
+                                return "3";
+                            }
+                        }
+                        else if (heartDisease.equals("No")) {
+                            if (bmi > 23) {
+                                return "3";
+                            }
+                            else if (bmi <= 23) {
+                                if (bmi > 18) {
+                                    return "2";
+                                }
+                                else if (bmi <= 18) {
+                                    return "3";
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if (hd3Months.equals("Yes")) {
+            return "4";
+        }
+        return null;
+    }
+}

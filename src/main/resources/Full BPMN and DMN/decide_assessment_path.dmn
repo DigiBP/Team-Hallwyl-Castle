@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="decideAssessmentPath" name="DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="4.3.0">
+  <decision id="decidePath" name="DecideAssessmentPath">
+    <informationRequirement id="InformationRequirement_10xfh5h">
+      <requiredInput href="#InputData_07o95dc" />
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_0tpnbck">
+      <requiredInput href="#InputData_1xrf3yb" />
+    </informationRequirement>
+    <decisionTable id="DecisionTable_0wr7br0" hitPolicy="FIRST">
+      <input id="Input_1" label="ASA Score" camunda:inputVariable="scorePrediction">
+        <inputExpression id="InputExpression_1" typeRef="string">
+          <text></text>
+        </inputExpression>
+        <inputValues id="UnaryTests_1s9gf9o">
+          <text>"1","2","3","4"</text>
+        </inputValues>
+      </input>
+      <input id="InputClause_0412594" label="Expert Opinion" biodi:width="245" camunda:inputVariable="expertOpinion">
+        <inputExpression id="LiteralExpression_09cb5cp" typeRef="string">
+          <text></text>
+        </inputExpression>
+        <inputValues id="UnaryTests_0iendi5">
+          <text>"Proceed","Further Assess","Do not proceed"</text>
+        </inputValues>
+      </input>
+      <output id="Output_1" label="Assessment Path" name="assessmentpath" typeRef="string">
+        <outputValues id="UnaryTests_12pw9j4">
+          <text>"Red","Yellow","Green"</text>
+        </outputValues>
+      </output>
+      <rule id="DecisionRule_0s06lu0">
+        <description>Patients with automated ASA score 1 require no further assessment can proceed to standard pre-surgery Anaesthesia protocol</description>
+        <inputEntry id="UnaryTests_0mrprxt">
+          <text>"1"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_0ta9bm2">
+          <text>"Proceed","Further Assess"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_12n6qio">
+          <text>"Green"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0pvhp7m">
+        <description>Patients with automated ASA score 2 AND Expert Opinion does not recommend further assessment, no further assessment required, can proceed to standard pre-surgery Anaesthesia protocol</description>
+        <inputEntry id="UnaryTests_0nemg6y">
+          <text>"2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_08dzyxe">
+          <text>"Proceed"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0a61epy">
+          <text>"Green"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_04eeth7">
+        <description>Patients with automated ASA score 2 AND Expert Opinion does recommend further assessment should have further assessment to determine subsequent path</description>
+        <inputEntry id="UnaryTests_0j0prpi">
+          <text>"2"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1d3dm4g">
+          <text>"Further Assess"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0nsoczw">
+          <text>"Yellow"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1q2k1ks">
+        <description>Patients with ASA score 3 or 4 are likely to have additional complex co-morbidities not detailed in Patient Info, and should have further assessment to determine subsequent path</description>
+        <inputEntry id="UnaryTests_1fpk46o">
+          <text>"3","4"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1dnk3eb">
+          <text>"Proceed","Further Assess"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1ldwcop">
+          <text>"Yellow"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1ctkgls">
+        <description>Patients of any automated ASA score where the Expert Opinion rules that the patient should not have anaesthesia for whatever, surgery should be cancelled</description>
+        <inputEntry id="UnaryTests_0biukz7">
+          <text>"1","2","3","4"</text>
+        </inputEntry>
+        <inputEntry id="UnaryTests_1ozhlvx">
+          <text>"Do not proceed"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0en1eso">
+          <text>"Red"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_1xrf3yb" name="ASA Score" />
+  <inputData id="InputData_07o95dc" name="Expert Opinion" />
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="decidePath">
+        <dc:Bounds height="80" width="180" x="370" y="170" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_11spjbf" dmnElementRef="InputData_1xrf3yb">
+        <dc:Bounds height="45" width="125" x="158" y="78" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DMNShape_19ts909" dmnElementRef="InputData_07o95dc">
+        <dc:Bounds height="45" width="125" x="159" y="288" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DMNEdge_0uxds80" dmnElementRef="InformationRequirement_10xfh5h">
+        <di:waypoint x="222" y="288" />
+        <di:waypoint x="460" y="270" />
+        <di:waypoint x="460" y="250" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge id="DMNEdge_1j3pu23" dmnElementRef="InformationRequirement_0tpnbck">
+        <di:waypoint x="221" y="123" />
+        <di:waypoint x="460" y="150" />
+        <di:waypoint x="460" y="170" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

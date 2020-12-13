@@ -1,0 +1,820 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_0dlz5e2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.3.0">
+  <bpmn:process id="get-schedule-mail-info-score-path" isExecutable="true">
+    <bpmn:startEvent id="StartEvent">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="patientIdEntered" label="Patient ID" type="string" />
+          <camunda:formField id="name" label="Name" type="string" />
+          <camunda:formField id="email" label="E-mail" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1dhatz3</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="ShowAvailability" name="Show Availability">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="newDateStart" label="date appointment start" type="string" />
+          <camunda:formField id="newDateEnd" label="date appointment end" type="string" />
+          <camunda:formField id="nextStart" label="Next Appointment Start" type="string" />
+          <camunda:formField id="nextEnd" label="Next Appointment End" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1a8w5kn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yookgb</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="CheckFreeSlots" name="Check Free Slots">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://api.vyte.in/v2/slots?duration=45&amp;emails=melanie.bochet@gmail.com&amp;from=${newDateStart}&amp;to=${newDateEnd}&amp;timezone=CH</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Authorization">i1am9jx5swxg5y2mt9sayh3sxys6hzorwm147ho8h28ee0uxbc</camunda:entry>
+                <camunda:entry key="accept">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="nextEnd">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+nextEnd=object.slots[0].end.dateTime;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="nextStart">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+nextAvailableStart=object.slots[0].start.dateTime;</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="newDateEnd">
+            <camunda:script scriptFormat="JavaScript">var date = new Date();
+date.setDate(date.getDate() + 21);
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+newDateEnd= y + '-'+ mm + '-'+ dd;</camunda:script>
+          </camunda:inputParameter>
+          <camunda:inputParameter name="newDateStart">
+            <camunda:script scriptFormat="JavaScript">var date = new Date();
+date.setDate(date.getDate() + 14);
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+newDateStart = y + '-'+ mm + '-'+ dd;</camunda:script>
+          </camunda:inputParameter>
+          <camunda:outputParameter name="newDateEnd">
+            <camunda:script scriptFormat="JavaScript">var date = new Date();
+date.setDate(date.getDate() + 21);
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+newDateEnd= y + '-'+ mm + '-'+ dd;</camunda:script>
+          </camunda:outputParameter>
+          <camunda:outputParameter name="newDateStart">
+            <camunda:script scriptFormat="JavaScript">var date = new Date();
+date.setDate(date.getDate() + 14);
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+newDateStart = y + '-'+ mm + '-'+ dd;</camunda:script>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1dhatz3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1a8w5kn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="BookFirstSlot" name="Book First Slot">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="JavaScript">var myJson = {
+ "title": "Anesthesia Consultation",
+ "created_by": {
+  "user": "5fbcb99aead58495b4d3606c"
+  },
+"confirmed": {
+        "flag": true
+    },
+  "dates": [
+    {
+      "all_day": false,
+      "date": execution.getVariable('formatStartDate'),
+      "end_date": execution.getVariable('formatEndDate')
+    }
+  ],
+ "invitees": {
+    "full_name": "New Patient",
+    "email": "new.patient@myhospital.ch"
+  },
+  "places": [
+    {
+      "name": "My Hospital"
+    }
+  ],
+  "vyteme": true
+}
+out= JSON.stringify(myJson);</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Authorization">i1am9jx5swxg5y2mt9sayh3sxys6hzorwm147ho8h28ee0uxbc</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">https://api.vyte.in/v2/events</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:outputParameter name="idEvent">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+idEvent=object["_id"];</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="location">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+location=object.places[0].name;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="confEnd">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+confEnd=object.dates[0].end_date;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="confStart">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+confStart=object.dates[0].date;</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="formatEndDate">
+            <camunda:script scriptFormat="JavaScript">date = new Date(nextEnd);
+date.setDate(date.getDate());
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+var hh = date.getHours();
+if (hh&lt;10 ){
+  hh = '0'+hh;
+} else {
+  hh = hh;
+}
+var min = date.getMinutes();
+if (min&lt;10 ){
+  min = '0'+min;
+} else {
+  min = min;
+}
+formatEndDate= y + '-'+ mm + '-'+ dd + 'T'+hh + ':'+min+':'+ '00';</camunda:script>
+          </camunda:inputParameter>
+          <camunda:inputParameter name="formatStartDate">
+            <camunda:script scriptFormat="JavaScript">date = new Date(nextStart);
+date.setDate(date.getDate());
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+var hh = date.getHours();
+if (hh&lt;10 ){
+  hh = '0'+hh;
+} else {
+  hh = hh;
+}
+var min = date.getMinutes();
+if (min&lt;10 ){
+  min = '0'+min;
+} else {
+  min = min;
+}
+formatStartDate= y + '-'+ mm + '-'+ dd + 'T'+hh + ':'+min+':'+ '00';</camunda:script>
+          </camunda:inputParameter>
+          <camunda:outputParameter name="time">
+            <camunda:script scriptFormat="JavaScript">date = new Date(nextStart);
+date.setDate(date.getDate());
+var hh = date.getHours();
+if (hh&lt;10 ){
+  hh = '0'+hh;
+} else {
+  hh = hh;
+}
+var min = date.getMinutes();
+if (min&lt;10 ){
+  min = '0'+min;
+} else {
+  min = min;
+}
+time= hh + ':'+min;</camunda:script>
+          </camunda:outputParameter>
+          <camunda:outputParameter name="appDate">
+            <camunda:script scriptFormat="JavaScript">date = new Date(confStart);
+date.setDate(date.getDate());
+var y = date.getFullYear();
+var mm = date.getMonth()+1;
+if (mm&lt;10){
+  mm = '0'+mm;
+} else {
+  mm = mm;
+}
+var dd = date.getDate();
+if (dd&lt;10 ){
+  dd = '0'+dd;
+} else {
+  dd = dd;
+} 
+appDate= dd+'/'+mm+'/'+y;</camunda:script>
+          </camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0yookgb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qfn7vi</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="ShowBookedSlot" name="Show Booked Slot">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="confStart" label="Confirmed appointment start" type="string" />
+          <camunda:formField id="confEnd" label="Confirmed appointment end" type="string" />
+          <camunda:formField id="location" label="Appointment Location" type="string" />
+          <camunda:formField id="idEvent" label="Event ID" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qfn7vi</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zrdva7</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="SendEmail" name="Send Email">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="JavaScript">var myJson = {
+"id": execution.getVariable('patientIdEntered'),
+"name": execution.getVariable('name'),
+"email": execution.getVariable('email'),
+"date": execution.getVariable('appDate'),
+"time": execution.getVariable('time'),
+"location": execution.getVariable('location'),
+}
+out= JSON.stringify(myJson);</camunda:script>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">https://hook.integromat.com/g30tdvr1xwd5n684yz848rhaoh6rx5ne</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zrdva7</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vl3n9a</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="GetPatientInfo" name="Get Patient Info">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://hook.integromat.com/s1dmun6w4f1yrc7lbh096olhdfuy31lw</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="JavaScript">out = JSON.stringify({
+    "patientIdEntered": patientIdEntered
+});</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="patientID">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientID=object.PatientId;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="surname">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+surname=object.Surname;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="firstName">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+firstName=object.FirstName;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="birthDate">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+birthDate=object.DateOfBirth;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="smoker">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+smoker=object.Smoking;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="alcoholConsumption">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+alcoholConsumption=object.Alcohol;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientHeight">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientHeight=object.Height;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientWeight">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientWeight=object.Weight;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientPacemaker">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientPacemaker=object.Pacemaker;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientHeartDisease">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientHeartDisease=object.HeartDisease;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientHeartRecently">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientHeartRecently=object.HeartRecently;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientBMI">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientBMI=object.BMI;</camunda:script>
+            </camunda:outputParameter>
+            <camunda:outputParameter name="patientOtherDisease">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+patientOtherDisease=object.OtherDisease;</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0myegd4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0prfnh3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="ShowPatientInfoFilled" name="Show Patient Info">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="patientID" label="Patient ID" type="string" />
+          <camunda:formField id="surname" label="Surname" type="string" />
+          <camunda:formField id="firstName" label="First Name" type="string" />
+          <camunda:formField id="birthDate" label="Date of Birth" type="string" />
+          <camunda:formField id="smoker" label="Smoker?" type="string" />
+          <camunda:formField id="alcoholConsumption" label="Alcohol consumption" type="string" />
+          <camunda:formField id="patientHeight" label="Height in cm" type="string" />
+          <camunda:formField id="patientWeight" label="Weight in kg" type="string" />
+          <camunda:formField id="patientPacemaker" label="Pacemaker?" type="string" />
+          <camunda:formField id="patientHeartDisease" label="Heart Disease?" type="string" />
+          <camunda:formField id="patientHeartRecently" label="Heart Disease within the last 3 months?" type="string" />
+          <camunda:formField id="patientBMI" label="BMI" type="string" />
+          <camunda:formField id="patientOtherDisease" label="Other Disease?" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0gcpq5i</bpmn:incoming>
+      <bpmn:outgoing>Flow_1lwsz3z</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_0cj6sjd">
+      <bpmn:incoming>Flow_0prfnh3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gcpq5i</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1cs44y8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_02pa0hm" name="appointment canceled">
+      <bpmn:incoming>Flow_1y6smt1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="ShowPatientInfoVoid" name="Show Patient Info">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="cancellation" label="Appointment canceled" type="string" defaultValue="Yes" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1cs44y8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tpsg3w</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:intermediateCatchEvent id="Event_04jytvb" name="Wait for 7 days">
+      <bpmn:incoming>Flow_1vl3n9a</bpmn:incoming>
+      <bpmn:outgoing>Flow_0myegd4</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_1wtvpl6">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT3M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="CancelAppointment" name="Cancel Appointment">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+                <camunda:entry key="Authorization">i1am9jx5swxg5y2mt9sayh3sxys6hzorwm147ho8h28ee0uxbc</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="url">https://api.vyte.in/v2/events/${idEvent}/cancel</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1tpsg3w</bpmn:incoming>
+      <bpmn:outgoing>Flow_1w2a3hb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="PredictScore" name="Predict ASA Score">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://bigml.io/andromeda/prediction?username=MSup;api_key=ee8979b665869d72d58967401f8f2b8722678cf9</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="JavaScript">out = JSON.stringify({
+    "model": "model/5fb40c00cb4f9607860004ca", 
+    "input_data": {
+        "000000": smoker,
+        "000001": alcoholConsumption,
+        "000002": corrBMI,
+        "000003": patientPacemaker,
+        "000004": patientHeartDisease,
+        "000005": patientHeartRecently,
+        "000006": patientOtherDisease
+        }
+});</camunda:script>
+            </camunda:inputParameter>
+            <camunda:outputParameter name="scorePrediction">
+              <camunda:script scriptFormat="JavaScript">object=JSON.parse(response);
+scorePrediction=object.output;</camunda:script>
+            </camunda:outputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="corrBMI">
+            <camunda:script scriptFormat="JavaScript">corrBMI = parseInt(patientBMI);</camunda:script>
+          </camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1lwsz3z</bpmn:incoming>
+      <bpmn:outgoing>Flow_0oes3il</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="SendCancelEmail" name="Send Cancellation Email">
+      <bpmn:extensionElements>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://hook.integromat.com/36he93eg5nlrmnqxpaj3uxa2p2nrb41e</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+            <camunda:inputParameter name="payload">
+              <camunda:script scriptFormat="JavaScript">var myJson = {
+"id": execution.getVariable('patientIdEntered'),
+"name": execution.getVariable('name'),
+"email": execution.getVariable('email'),
+"date": execution.getVariable('appDate'),
+"time": execution.getVariable('time'),
+"location": execution.getVariable('location'),
+}
+out= JSON.stringify(myJson);</camunda:script>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1w2a3hb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1y6smt1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1y6smt1" sourceRef="SendCancelEmail" targetRef="Event_02pa0hm" />
+    <bpmn:sequenceFlow id="Flow_1w2a3hb" sourceRef="CancelAppointment" targetRef="SendCancelEmail" />
+    <bpmn:sequenceFlow id="Flow_1tpsg3w" sourceRef="ShowPatientInfoVoid" targetRef="CancelAppointment" />
+    <bpmn:sequenceFlow id="Flow_1vl3n9a" sourceRef="SendEmail" targetRef="Event_04jytvb" />
+    <bpmn:sequenceFlow id="Flow_1cs44y8" sourceRef="Gateway_0cj6sjd" targetRef="ShowPatientInfoVoid">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${patientID != patientIdEntered}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0gcpq5i" sourceRef="Gateway_0cj6sjd" targetRef="ShowPatientInfoFilled">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${patientID == patientIdEntered}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0prfnh3" sourceRef="GetPatientInfo" targetRef="Gateway_0cj6sjd" />
+    <bpmn:sequenceFlow id="Flow_0myegd4" sourceRef="Event_04jytvb" targetRef="GetPatientInfo" />
+    <bpmn:sequenceFlow id="Flow_1lwsz3z" sourceRef="ShowPatientInfoFilled" targetRef="PredictScore" />
+    <bpmn:sequenceFlow id="Flow_0zrdva7" sourceRef="ShowBookedSlot" targetRef="SendEmail" />
+    <bpmn:sequenceFlow id="Flow_1qfn7vi" sourceRef="BookFirstSlot" targetRef="ShowBookedSlot" />
+    <bpmn:sequenceFlow id="Flow_0yookgb" sourceRef="ShowAvailability" targetRef="BookFirstSlot" />
+    <bpmn:sequenceFlow id="Flow_1a8w5kn" sourceRef="CheckFreeSlots" targetRef="ShowAvailability" />
+    <bpmn:sequenceFlow id="Flow_1dhatz3" sourceRef="StartEvent" targetRef="CheckFreeSlots" />
+    <bpmn:businessRuleTask id="Activity_1tqcb31" name="Decide Assessment Path" camunda:resultVariable="decideAssessmentPath" camunda:decisionRef="decidePath" camunda:mapDecisionResult="singleEntry">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="Input_12q80n7" />
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0b4nbxx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wx2a9n</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:endEvent id="Event_1imoh95">
+      <bpmn:incoming>Flow_0jnsmrd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_1i4byky">
+      <bpmn:incoming>Flow_1vg0t85</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="Event_088gjjy" name="End Anaesthesia Assessment">
+      <bpmn:incoming>Flow_1ctvtud</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_059i0cq" name="Which assessment path?">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+        </camunda:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wx2a9n</bpmn:incoming>
+      <bpmn:outgoing>Flow_0q9n7u0</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ga5zme</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1b3jsr5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Activity_0nrtz1f" name="Consult Patient">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="expertOpinion" label="Expert Opinion (Proceed/Further Assess/Do not proceed)" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0oes3il</bpmn:incoming>
+      <bpmn:outgoing>Flow_0b4nbxx</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0zc5ds8" name="Conduct Further Assessment">
+      <bpmn:incoming>Flow_1ga5zme</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jnsmrd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1o0iaw7" name="Proceed to Anaesthesia Prep">
+      <bpmn:incoming>Flow_0q9n7u0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1vg0t85</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0wx2a9n" sourceRef="Activity_1tqcb31" targetRef="Gateway_059i0cq" />
+    <bpmn:sequenceFlow id="Flow_0jnsmrd" sourceRef="Activity_0zc5ds8" targetRef="Event_1imoh95" />
+    <bpmn:sequenceFlow id="Flow_1vg0t85" sourceRef="Activity_1o0iaw7" targetRef="Event_1i4byky" />
+    <bpmn:sequenceFlow id="Flow_0q9n7u0" name="Green" sourceRef="Gateway_059i0cq" targetRef="Activity_1o0iaw7">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decideAssessmentPath == "Green"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1ga5zme" name="Yellow" sourceRef="Gateway_059i0cq" targetRef="Activity_0zc5ds8">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decideAssessmentPath == "Yellow"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0b4nbxx" sourceRef="Activity_0nrtz1f" targetRef="Activity_1tqcb31" />
+    <bpmn:sequenceFlow id="Flow_0oes3il" sourceRef="PredictScore" targetRef="Activity_0nrtz1f" />
+    <bpmn:userTask id="Activity_00n7w52" name="Notify surgery cancellation">
+      <bpmn:incoming>Flow_1b3jsr5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ctvtud</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1ctvtud" sourceRef="Activity_00n7w52" targetRef="Event_088gjjy" />
+    <bpmn:sequenceFlow id="Flow_1b3jsr5" name="Red" sourceRef="Gateway_059i0cq" targetRef="Activity_00n7w52">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${decideAssessmentPath == "Red"}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmn:message id="Message_1nnlm5m" name="Please conduct further assessment" />
+  <bpmn:message id="Message_1fmk7th" name="Please conduct further assessment" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="get-schedule-mail-info-score-path">
+      <bpmndi:BPMNEdge id="Flow_1dhatz3_di" bpmnElement="Flow_1dhatz3">
+        <di:waypoint x="150" y="287" />
+        <di:waypoint x="205" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a8w5kn_di" bpmnElement="Flow_1a8w5kn">
+        <di:waypoint x="305" y="287" />
+        <di:waypoint x="365" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0yookgb_di" bpmnElement="Flow_0yookgb">
+        <di:waypoint x="465" y="287" />
+        <di:waypoint x="515" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qfn7vi_di" bpmnElement="Flow_1qfn7vi">
+        <di:waypoint x="615" y="287" />
+        <di:waypoint x="665" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zrdva7_di" bpmnElement="Flow_0zrdva7">
+        <di:waypoint x="765" y="287" />
+        <di:waypoint x="815" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1lwsz3z_di" bpmnElement="Flow_1lwsz3z">
+        <di:waypoint x="1430" y="287" />
+        <di:waypoint x="1486" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0myegd4_di" bpmnElement="Flow_0myegd4">
+        <di:waypoint x="1008" y="287" />
+        <di:waypoint x="1060" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0prfnh3_di" bpmnElement="Flow_0prfnh3">
+        <di:waypoint x="1160" y="287" />
+        <di:waypoint x="1215" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gcpq5i_di" bpmnElement="Flow_0gcpq5i">
+        <di:waypoint x="1265" y="287" />
+        <di:waypoint x="1330" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cs44y8_di" bpmnElement="Flow_1cs44y8">
+        <di:waypoint x="1240" y="312" />
+        <di:waypoint x="1240" y="450" />
+        <di:waypoint x="1330" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vl3n9a_di" bpmnElement="Flow_1vl3n9a">
+        <di:waypoint x="915" y="287" />
+        <di:waypoint x="972" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tpsg3w_di" bpmnElement="Flow_1tpsg3w">
+        <di:waypoint x="1430" y="450" />
+        <di:waypoint x="1486" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1w2a3hb_di" bpmnElement="Flow_1w2a3hb">
+        <di:waypoint x="1586" y="450" />
+        <di:waypoint x="1650" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y6smt1_di" bpmnElement="Flow_1y6smt1">
+        <di:waypoint x="1750" y="450" />
+        <di:waypoint x="1822" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wx2a9n_di" bpmnElement="Flow_0wx2a9n">
+        <di:waypoint x="2220" y="287" />
+        <di:waypoint x="2383" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jnsmrd_di" bpmnElement="Flow_0jnsmrd">
+        <di:waypoint x="2648" y="287" />
+        <di:waypoint x="2720" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1vg0t85_di" bpmnElement="Flow_1vg0t85">
+        <di:waypoint x="2648" y="120" />
+        <di:waypoint x="2720" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0q9n7u0_di" bpmnElement="Flow_0q9n7u0">
+        <di:waypoint x="2408" y="262" />
+        <di:waypoint x="2408" y="120" />
+        <di:waypoint x="2548" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2408" y="188" width="31" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ga5zme_di" bpmnElement="Flow_1ga5zme">
+        <di:waypoint x="2433" y="287" />
+        <di:waypoint x="2548" y="287" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2475" y="269" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0b4nbxx_di" bpmnElement="Flow_0b4nbxx">
+        <di:waypoint x="2030" y="287" />
+        <di:waypoint x="2120" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0oes3il_di" bpmnElement="Flow_0oes3il">
+        <di:waypoint x="1586" y="287" />
+        <di:waypoint x="1930" y="287" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ctvtud_di" bpmnElement="Flow_1ctvtud">
+        <di:waypoint x="2648" y="460" />
+        <di:waypoint x="2720" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b3jsr5_di" bpmnElement="Flow_1b3jsr5">
+        <di:waypoint x="2408" y="312" />
+        <di:waypoint x="2408" y="460" />
+        <di:waypoint x="2548" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2413" y="383" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent">
+        <dc:Bounds x="114" y="269" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="194" y="142" width="8" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_094dr6p_di" bpmnElement="ShowAvailability">
+        <dc:Bounds x="365" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1h1zuvv_di" bpmnElement="CheckFreeSlots">
+        <dc:Bounds x="205" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18uoryw_di" bpmnElement="BookFirstSlot">
+        <dc:Bounds x="515" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10oz626_di" bpmnElement="ShowBookedSlot">
+        <dc:Bounds x="665" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dsgy4a_di" bpmnElement="SendEmail">
+        <dc:Bounds x="815" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vvtw9q_di" bpmnElement="GetPatientInfo">
+        <dc:Bounds x="1060" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yrz4xr_di" bpmnElement="ShowPatientInfoFilled">
+        <dc:Bounds x="1330" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0cj6sjd_di" bpmnElement="Gateway_0cj6sjd" isMarkerVisible="true">
+        <dc:Bounds x="1215" y="262" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_02pa0hm_di" bpmnElement="Event_02pa0hm">
+        <dc:Bounds x="1822" y="432" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1811" y="475" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lukfyp_di" bpmnElement="ShowPatientInfoVoid">
+        <dc:Bounds x="1330" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_04jytvb_di" bpmnElement="Event_04jytvb">
+        <dc:Bounds x="972" y="269" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="954" y="312" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0divcu5_di" bpmnElement="CancelAppointment">
+        <dc:Bounds x="1486" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_173lmk7_di" bpmnElement="PredictScore">
+        <dc:Bounds x="1486" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xrk2o8_di" bpmnElement="SendCancelEmail">
+        <dc:Bounds x="1650" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1imoh95_di" bpmnElement="Event_1imoh95">
+        <dc:Bounds x="2720" y="269" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1i4byky_di" bpmnElement="Event_1i4byky">
+        <dc:Bounds x="2720" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_088gjjy_di" bpmnElement="Event_088gjjy">
+        <dc:Bounds x="2720" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2697" y="485" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_059i0cq_di" bpmnElement="Gateway_059i0cq" isMarkerVisible="true">
+        <dc:Bounds x="2383" y="262" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2303" y="296" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zc5ds8_di" bpmnElement="Activity_0zc5ds8">
+        <dc:Bounds x="2548" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1o0iaw7_di" bpmnElement="Activity_1o0iaw7">
+        <dc:Bounds x="2548" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nrtz1f_di" bpmnElement="Activity_0nrtz1f">
+        <dc:Bounds x="1930" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1tqcb31_di" bpmnElement="Activity_1tqcb31">
+        <dc:Bounds x="2120" y="247" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00n7w52_di" bpmnElement="Activity_00n7w52">
+        <dc:Bounds x="2548" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
